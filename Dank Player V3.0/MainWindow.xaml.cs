@@ -14,9 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using Un4seen.Bass;
-using Un4seen.Bass.Misc;
-using Un4seen.BassWasapi;
+
 using Path = System.IO.Path;
 using WinForms = System.Windows.Forms;
 
@@ -36,8 +34,6 @@ namespace Dank_Player_V3._0
 
         private string _currSource;
 
-        private int handle;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -47,8 +43,6 @@ namespace Dank_Player_V3._0
 
             controlGrid.Visibility = Visibility.Visible;
             animationGrid.Visibility = Visibility.Hidden;
-
-            Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero);
         }
 
         #region CONTROL
@@ -58,9 +52,6 @@ namespace Dank_Player_V3._0
             {
                 double differenceX = (Mouse.GetPosition(this).X - this.Width / 2);
                 double differenceY = (Mouse.GetPosition(this).Y - this.Height / 2);
-
-                //debugText.Content = $"X:{differenceX} Y:{differenceY}";
-
                 txtMainTitle.Margin = new Thickness((differenceX / 10) / 2, (differenceY / 10) / 2, 0, 0);
             };
 
@@ -131,7 +122,6 @@ namespace Dank_Player_V3._0
                     btnPauseIcon.Icon = FontAwesome.WPF.FontAwesomeIcon.PlayCircle;
                     _isPlaying = false;
                     btnPause.ToolTip = "Play";
-                    Bass.BASS_ChannelPause(handle);
                 }
                 else
                 {
@@ -139,7 +129,6 @@ namespace Dank_Player_V3._0
                     btnPauseIcon.Icon = FontAwesome.WPF.FontAwesomeIcon.PauseCircle;
                     _isPlaying = true;
                     btnPause.ToolTip = "Pause";
-                    Bass.BASS_ChannelPlay(handle, false);
                 }
             };
 
@@ -184,7 +173,7 @@ namespace Dank_Player_V3._0
                 (s as Grid).Background = new SolidColorBrush(Color.FromArgb(40, 255, 255, 255));
                 txtMainTitle.IsEnabled = false;
 
-                string destination = (System.Reflection.Assembly.GetEntryAssembly().Location).Replace("Dank Player V3.0.exe", "backgrounds");
+                string destination = Directory.GetCurrentDirectory() + "/backgrounds";
                 string[] motionBackgrounds = FileHelper.GetFiles(destination, "*.mov|*.mp4", SearchOption.AllDirectories);
                 StackPanel mainStack = new StackPanel();
                 mainStack.Orientation = Orientation.Vertical;
@@ -502,9 +491,6 @@ namespace Dank_Player_V3._0
             mainPlayer.Source = new Uri(nextTrack.path);
             lstTrackList.SelectedItem = nextTrack;
 
-            Bass.BASS_ChannelStop(handle);
-            Bass.BASS_ChannelPlay(handle, false);
-
             playerSlider.IsEnabled = true;
             btnPause.IsEnabled = true;
             btnNext.IsEnabled = true;
@@ -554,17 +540,11 @@ namespace Dank_Player_V3._0
             }; 
 
             _timerVideoTime.Start();
-
             _timerVolumeIntensityTick = new DispatcherTimer();
             _timerVolumeIntensityTick.Interval = TimeSpan.FromMilliseconds(10);
 
             MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
             MMDevice device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-
-            mainPlayer.Stop();
-    
-            handle = Bass.BASS_StreamCreateFile(_currSource, 0, 0, BASSFlag.BASS_SAMPLE_FLOAT);
-            debugText.Visibility = Visibility.Visible;
 
             _timerVolumeIntensityTick.Tick += async(s, ev) =>
             {
@@ -572,19 +552,10 @@ namespace Dank_Player_V3._0
                 {
                     volumeIntensityBar.Dispatcher.Invoke(() =>
                     {
-                        //double value = Math.Round((device.AudioMeterInformation.MasterPeakValue * 100), 1);
-                        //volumeIntensityBar.Value = value;
-
-                        float[] buffer = new float[2048];
-                        Bass.BASS_ChannelGetData(handle, buffer, (int)BASSData.BASS_DATA_FFT4096); 
-
-                        int hz = Utils.FFTIndex2Frequency(4, 4096, 44100);
-                        Visuals vis = new Visuals();
-                        float t = vis.DetectFrequency(handle, hz, hz + 18, true);
-
-                        debugText.Content = t.ToString();
-                        volumeIntensityBar.Value = t * 15;
-                        Animation.AnimateLabelObjectFontSize(txtMainTitle, 60 + (t * 10), TimeSpan.FromMilliseconds(100));
+                        // NOTE: On this branch, values react to audio level instead of frequency.
+                        double value = Math.Round(device.AudioMeterInformation.MasterPeakValue * 100, 1);
+                        volumeIntensityBar.Value = value;
+                        Animation.AnimateLabelObjectFontSize(txtMainTitle, 60 + (value / 10), TimeSpan.FromMilliseconds(100));
                     });
                 });
             };
