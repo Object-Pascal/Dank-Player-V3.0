@@ -1,0 +1,217 @@
+﻿<Controls:MetroWindow x:Class="Dank_Player_V3._0.MainWindow"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        mc:Ignorable="d"
+        Title="Dank Player v3.0" TitleAlignment="Center" Width="1920" Height="1080" ResizeMode="NoResize" WindowStyle="None" WindowState="Maximized" ShowTitleBar="False" IgnoreTaskbarOnMaximize="True">
+    <Grid x:Name="backgroundContainer" Background="#FF252525">
+        <!--Menu control-->
+        <Grid x:Name="controlGrid" Visibility="Hidden">
+            <MediaElement x:Name="mainPlayer" Visibility="Hidden" MediaOpened="mainPlayer_MediaOpened" Grid.RowSpan="2"/>
+            <Label x:Name="debugText" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Foreground="White"></Label>
+
+            <!--Flyout menu left-->
+            <Grid x:Name="btnMenuLeft" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#33FFFFFF" Width="20" Height="100"
+                  MouseMove="ButtonStyleChangeMove" MouseDown="ButtonStyleChangeDown" MouseLeave="ButtonStyleChangeLeave">
+                <Label Margin="0,36,0,0" HorizontalAlignment="Center" Content="⮞" FontSize="14" FontFamily="Arial" Foreground="White"/>
+            </Grid>
+            <Controls:Flyout x:Name="flyoutMenuLeft" Position="Left" IsOpen="False" Width="500" Background="#BF252525" Panel.ZIndex="10" IsPinned="False" Header="Backgrounds">
+                <ScrollViewer x:Name="backgroundSelectorContainer">
+                </ScrollViewer>
+            </Controls:Flyout>
+
+            <!--Flyout menu right-->
+            <Grid x:Name="btnMenuRight" HorizontalAlignment="Right" VerticalAlignment="Center" Background="#33FFFFFF" Width="20" Height="100"
+                  MouseMove="ButtonStyleChangeMove" MouseDown="ButtonStyleChangeDown" MouseLeave="ButtonStyleChangeLeave">
+                <Label Margin="0,36,0,0" HorizontalAlignment="Center" Content="⮜" FontSize="15" FontFamily="Arial" Foreground="White"/>
+            </Grid>
+            <Controls:Flyout x:Name="flyoutMenuRight" Position="Right" IsOpen="False" Width="500" Background="#BF252525" Panel.ZIndex="10" IsPinned="False" Header="Playlist">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="7*"/>
+                    </Grid.RowDefinitions>
+
+                    <!--Slider control-->
+                    <Grid Grid.Row="0">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,65">
+                            <ToggleButton x:Name="btnShuffleEnabled" Width="30" Height="30" IsChecked="False" ToolTip="Shuffle off" Margin="0,0,5,0">
+                                <fa:ImageAwesome Icon="Random" Foreground="White" Margin="2,2,2,2"/>
+                            </ToggleButton>
+
+                            <Button x:Name="btnPrevious" Width="30" Height="30" ToolTip="Previous" Margin="0,0,5,0">
+                                <fa:ImageAwesome Icon="ArrowCircleLeft" Foreground="White" Margin="2,2,2,2"/>
+                            </Button>
+                            <Button x:Name="btnPause" Width="30" Height="30" ToolTip="Pause" Margin="0,0,5,0">
+                                <fa:ImageAwesome x:Name="btnPauseIcon" Icon="PauseCircle" Foreground="White" Margin="2,2,2,2"/>
+                            </Button>
+                            <Button x:Name="btnNext" Width="30" Height="30" ToolTip="Next" Margin="0,0,5,0">
+                                <fa:ImageAwesome Icon="ArrowCircleRight" Foreground="White" Margin="2,2,2,2"/>
+                            </Button>
+                        </StackPanel>
+
+                        <ProgressBar x:Name="volumeIntensityBar" Width="100" Height="10" ToolTip="Next" HorizontalAlignment="Right" Margin="0,0,50,65" Value="0" Maximum="100"/>
+
+                        <TextBlock Name="txtCompactTitle" VerticalAlignment="Center" Margin="0,0,0,250" MaxWidth="475" Opacity="0.75" Height="50" Foreground="White" TextAlignment="Center" FontSize="30"></TextBlock>
+
+                        <TextBlock Name="txtCurrTime" VerticalAlignment="Center" Margin="0,0,100,150" Width="100" Opacity="0.75" Height="50" Foreground="White" TextAlignment="Center" FontSize="30">0:00</TextBlock>
+                        <TextBlock VerticalAlignment="Center" Margin="0,0,0,150" Width="50" Opacity="0.75" Height="50" Foreground="White" TextAlignment="Center" FontSize="30">/</TextBlock>
+                        <TextBlock Name="txtMaxTime" VerticalAlignment="Center" Margin="100,0,0,150" Width="100" Height="50" Opacity="0.75" Foreground="White" TextAlignment="Center" FontSize="30">0:00</TextBlock>
+
+                        <Slider Name="playerSlider" IsMoveToPointEnabled="True" Margin="50,0,50,0" Opacity="0.75" VerticalAlignment="Center" Style="{DynamicResource Horizontal_Slider}" />
+                        <Slider Name="volumeSlider" IsMoveToPointEnabled="True" Margin="50,75,275,0" Opacity="0.75" VerticalAlignment="Center" Style="{DynamicResource Horizontal_Slider2}" Maximum="100" Value="50"/>
+
+                        <Button x:Name="btnResetPlaylist" Width="30" Height="30" ToolTip="New playlist" Margin="50,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                            <fa:ImageAwesome Icon="Folder" Foreground="White" Margin="2,2,2,2"/>
+                        </Button>
+
+                        <TextBox x:Name="txtSearch" Margin="150,0,150,10" Background="#FF2F2F2F" VerticalAlignment="Bottom" Opacity="0.75" Foreground="White" IsEnabled="False" />
+                        <Label x:Name="txtTotalTime" Margin="150,0,50,10" ToolTip="Total playtime" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="White" FontFamily="Segoe UI Light">00:00:00</Label>
+                    </Grid>
+
+                    <!--Playlist control-->
+                    <Grid Grid.Row="1">
+                        <fa:ImageAwesome x:Name="tracksLoadingIndicator" Panel.ZIndex="15" Visibility="Hidden" Icon="CircleOutlineNotch" Spin="True" SpinDuration="4" Foreground="White" Opacity="0.75" Margin="100, 375, 100, 375"/>
+                        <Button x:Name="btnNewPlaylist" Margin="100, 275, 100, 350" Content="New playlist" Visibility="Visible" Background="#FF2F2F2F" Opacity="0.75"/>
+                        <ListView x:Name="lstTrackList" Visibility="Hidden" Opacity="0.75" Panel.ZIndex="10">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="9*"/>
+                                            <ColumnDefinition Width="1*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Foreground="White" TextWrapping="Wrap" Text="{Binding title}" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="1" Foreground="White" TextWrapping="Wrap" Text="{Binding duration}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </Grid>
+            </Controls:Flyout>
+
+            <Label x:Name="txtMainTitle" MouseUp="ShowAnimationPane" Panel.ZIndex="5" VerticalAlignment="Center" Content="Start by creating a new playlist >>" Margin="0, 0, 0, 0" HorizontalAlignment="Center" FontSize="60" FontFamily="Segoe UI Light" FontWeight="Bold" Foreground="White">
+                <Label.Effect>
+                    <DropShadowEffect BlurRadius="10" Opacity="0.6"/>
+                </Label.Effect>
+            </Label>
+        </Grid>
+        <Grid x:Name="animationGrid">
+            <Canvas x:Name="animationPane" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            </Canvas>
+        </Grid>
+        <MediaElement x:Name="mediaBackground" Panel.ZIndex="-5"/>
+    </Grid>
+
+    <Controls:MetroWindow.Resources>
+        <Style x:Key="SliderRepeatButton" TargetType="RepeatButton">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="IsTabStop" Value="false" />
+            <Setter Property="Focusable" Value="false" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RepeatButton">
+                        <Border BorderThickness="0" BorderBrush="White" Background="White" Height="10" Opacity="0.5"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SliderRepeatButton1" TargetType="RepeatButton">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RepeatButton">
+                        <Border SnapsToDevicePixels="True" Background="White"  BorderThickness="1" BorderBrush="White" Height="10" Opacity="1"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SliderThumb" TargetType="Thumb">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Rectangle x:Name="thumbEllipse" Height="24" Width="6" Fill="White" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <ControlTemplate x:Key="Slider" TargetType="Slider">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Track Grid.Row="1" x:Name="PART_Track">
+                    <Track.DecreaseRepeatButton>
+                        <RepeatButton Style="{StaticResource SliderRepeatButton1}"/>
+                    </Track.DecreaseRepeatButton>
+                    <Track.Thumb>
+                        <Thumb x:Name="playerThumb" Style="{StaticResource SliderThumb}" DragCompleted="playerThumb_DragCompleted" DragStarted="playerThumb_DragStarted" DragDelta="playerThumb_DragDelta"/>
+                    </Track.Thumb>
+                    <Track.IncreaseRepeatButton>
+                        <RepeatButton Style="{StaticResource SliderRepeatButton}"/>
+                    </Track.IncreaseRepeatButton>
+                </Track>
+            </Grid>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="Slider2" TargetType="Slider">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Track Grid.Row="1" x:Name="PART_Track">
+                    <Track.DecreaseRepeatButton>
+                        <RepeatButton Style="{StaticResource SliderRepeatButton1}"/>
+                    </Track.DecreaseRepeatButton>
+                    <Track.Thumb>
+                        <Thumb x:Name="playerThumb" Style="{StaticResource SliderThumb}" DragDelta="playerThumb_DragDelta_1"/>
+                    </Track.Thumb>
+                    <Track.IncreaseRepeatButton>
+                        <RepeatButton Style="{StaticResource SliderRepeatButton}"/>
+                    </Track.IncreaseRepeatButton>
+                </Track>
+            </Grid>
+        </ControlTemplate>
+
+        <Style x:Key="Horizontal_Slider" TargetType="Slider">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="MinHeight" Value="21" />
+                    <Setter Property="MinWidth" Value="104" />
+                    <Setter Property="Template" Value="{StaticResource Slider}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="Horizontal_Slider2" TargetType="Slider">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="MinHeight" Value="21" />
+                    <Setter Property="MinWidth" Value="104" />
+                    <Setter Property="Template" Value="{StaticResource Slider2}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Controls:MetroWindow.Resources>
+</Controls:MetroWindow>

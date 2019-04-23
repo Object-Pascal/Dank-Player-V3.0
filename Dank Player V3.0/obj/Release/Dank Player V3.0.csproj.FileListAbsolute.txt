@@ -1,0 +1,27 @@
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\bin\Release\Dank Player V3.0.exe.config
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\bin\Release\Dank Player V3.0.exe
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\bin\Release\Dank Player V3.0.pdb
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\bin\Release\ControlzEx.dll
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\bin\Release\FontAwesome.WPF.dll
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\bin\Release\MahApps.Metro.dll
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\bin\Release\NAudio.dll
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\bin\Release\System.Windows.Interactivity.dll
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\bin\Release\ControlzEx.pdb
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\bin\Release\FontAwesome.WPF.xml
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\bin\Release\MahApps.Metro.pdb
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\bin\Release\MahApps.Metro.xml
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\bin\Release\NAudio.xml
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\obj\Release\MainWindow.g.cs
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\obj\Release\App.g.cs
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\obj\Release\Dank Player V3.0_MarkupCompile.cache
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\obj\Release\Dank Player V3.0_MarkupCompile.lref
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\obj\Release\App.baml
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\obj\Release\MainWindow.baml
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\obj\Release\Dank Player V3.0.g.resources
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\obj\Release\Dank_Player_V3._0.Properties.Resources.resources
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\obj\Release\Dank Player V3.0.csproj.GenerateResource.cache
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\obj\Release\Dank Player V3.0.csproj.CoreCompileInputs.cache
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\obj\Release\Dank Player V3.0.csproj.CopyComplete
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\obj\Release\Dank Player V3.0.exe
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\obj\Release\Dank Player V3.0.pdb
+D:\Dropbox\Visual Studio Projects\Dank Player V3.0\Dank Player V3.0\obj\Release\Dank Player V3.0.csprojResolveAssemblyReference.cache
