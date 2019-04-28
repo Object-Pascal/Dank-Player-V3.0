@@ -88,6 +88,7 @@
     </Compile>
     <Compile Include="Components\Bindable\TrackListItem.cs" />
     <Compile Include="Components\FileHelper.cs" />
+    <Compile Include="Components\StreamPlayHandler.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

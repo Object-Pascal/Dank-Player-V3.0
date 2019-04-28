@@ -10,7 +10,7 @@
     <Grid x:Name="backgroundContainer" Background="#FF252525">
         <!--Menu control-->
         <Grid x:Name="controlGrid" Visibility="Hidden">
-            <MediaElement x:Name="mainPlayer" Visibility="Hidden" MediaOpened="mainPlayer_MediaOpened" Grid.RowSpan="2"/>
+            <!--<MediaElement x:Name="mainPlayer" Visibility="Hidden" MediaOpened="mainPlayer_MediaOpened" Grid.RowSpan="2"/>-->
             <Label x:Name="debugText" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Foreground="White"></Label>
 
             <!--Flyout menu left-->
@@ -53,7 +53,7 @@
                             </Button>
                         </StackPanel>
 
-                        <ProgressBar x:Name="volumeIntensityBar" Width="100" Height="10" ToolTip="Next" HorizontalAlignment="Right" Margin="0,0,50,65" Value="0" Maximum="100"/>
+                        <ProgressBar x:Name="bassIntensityBar" Width="100" Height="10" ToolTip="Next" HorizontalAlignment="Right" Margin="0,0,50,65" Value="0" Maximum="100"/>
 
                         <TextBlock Name="txtCompactTitle" VerticalAlignment="Center" Margin="0,0,0,250" MaxWidth="475" Opacity="0.75" Height="50" Foreground="White" TextAlignment="Center" FontSize="30"></TextBlock>
 
@@ -62,7 +62,6 @@
                         <TextBlock Name="txtMaxTime" VerticalAlignment="Center" Margin="100,0,0,150" Width="100" Height="50" Opacity="0.75" Foreground="White" TextAlignment="Center" FontSize="30">0:00</TextBlock>
 
                         <Slider Name="playerSlider" IsMoveToPointEnabled="True" Margin="50,0,50,0" Opacity="0.75" VerticalAlignment="Center" Style="{DynamicResource Horizontal_Slider}" />
-                        <Slider Name="volumeSlider" IsMoveToPointEnabled="True" Margin="50,75,275,0" Opacity="0.75" VerticalAlignment="Center" Style="{DynamicResource Horizontal_Slider2}" Maximum="100" Value="50"/>
 
                         <Button x:Name="btnResetPlaylist" Width="30" Height="30" ToolTip="New playlist" Margin="50,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom">
                             <fa:ImageAwesome Icon="Folder" Foreground="White" Margin="2,2,2,2"/>
@@ -159,27 +158,6 @@
                     </Track.DecreaseRepeatButton>
                     <Track.Thumb>
                         <Thumb x:Name="playerThumb" Style="{StaticResource SliderThumb}" DragCompleted="playerThumb_DragCompleted" DragStarted="playerThumb_DragStarted" DragDelta="playerThumb_DragDelta"/>
-                    </Track.Thumb>
-                    <Track.IncreaseRepeatButton>
-                        <RepeatButton Style="{StaticResource SliderRepeatButton}"/>
-                    </Track.IncreaseRepeatButton>
-                </Track>
-            </Grid>
-        </ControlTemplate>
-
-        <ControlTemplate x:Key="Slider2" TargetType="Slider">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Track Grid.Row="1" x:Name="PART_Track">
-                    <Track.DecreaseRepeatButton>
-                        <RepeatButton Style="{StaticResource SliderRepeatButton1}"/>
-                    </Track.DecreaseRepeatButton>
-                    <Track.Thumb>
-                        <Thumb x:Name="playerThumb" Style="{StaticResource SliderThumb}" DragDelta="playerThumb_DragDelta_1"/>
                     </Track.Thumb>
                     <Track.IncreaseRepeatButton>
                         <RepeatButton Style="{StaticResource SliderRepeatButton}"/>
