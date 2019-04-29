@@ -10,14 +10,21 @@ namespace Dank_Player_V3._0
     public class StreamPlayHandler
     {
         public int handle { get; private set; }
+        public float volume { get; private set; }
 
         public event EventHandler<MixerLoadEventArgs> MediaLoaded;
 
-        public void Init(int device, int freq, BASSInit flags, IntPtr win) 
-            => Bass.BASS_Init(device, freq, flags, win);
+        public void Init(int device, int freq, BASSInit flags, IntPtr win)
+        {
+            volume = 0.5f;
+            Bass.BASS_Init(device, freq, flags, win);
+        }
 
-        public void Init(int device, int freq, BASSInit flags, IntPtr win, Guid clsid) 
-            => Bass.BASS_Init(device, freq, flags, win, clsid);
+        public void Init(int device, int freq, BASSInit flags, IntPtr win, Guid clsid)
+        {
+            volume = 0.5f;
+            Bass.BASS_Init(device, freq, flags, win, clsid);
+        }
 
         public void Play()
         {
@@ -27,6 +34,7 @@ namespace Dank_Player_V3._0
         public void Load(string file)
         {
             handle = Bass.BASS_StreamCreateFile(file, 0, 0, BASSFlag.BASS_SAMPLE_FLOAT);
+            UpdateVolume(volume);
             MediaLoaded?.Invoke(this, new MixerLoadEventArgs()
             {
                 currFile = file
@@ -41,6 +49,12 @@ namespace Dank_Player_V3._0
         public void Stop()
         {
             Bass.BASS_ChannelStop(handle);
+        }
+
+        public void UpdateVolume(float volume)
+        {
+            Bass.BASS_ChannelSetAttribute(handle, BASSAttribute.BASS_ATTRIB_VOL, volume);
+            this.volume = volume;
         }
 
         public void UpdatePosition(TimeSpan time)

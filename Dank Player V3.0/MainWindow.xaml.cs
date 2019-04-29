@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -88,6 +89,7 @@ namespace Dank_Player_V3._0
             mediaBackground.Volume = 0;
 
             playerSlider.IsEnabled = false;
+            volumeSlider.IsEnabled = false;
             btnShuffleEnabled.IsEnabled = false;
             btnPause.IsEnabled = false;
             btnNext.IsEnabled = false;
@@ -348,6 +350,7 @@ namespace Dank_Player_V3._0
                         tracksLoadingIndicator.Visibility = Visibility.Visible;
 
                         playerSlider.IsEnabled = false;
+                        volumeSlider.IsEnabled = false;
                         btnShuffleEnabled.IsEnabled = false;
                         btnPause.IsEnabled = false;
                         btnNext.IsEnabled = false;
@@ -437,10 +440,16 @@ namespace Dank_Player_V3._0
                     _isPlaying = true;
 
                     playerSlider.IsEnabled = true;
+                    volumeSlider.IsEnabled = true;
                     btnPause.IsEnabled = true;
                     btnNext.IsEnabled = true;
                     btnPrevious.IsEnabled = !btnShuffleEnabled.IsChecked.Value;
                 }
+            };
+
+            volumeSlider.ValueChanged += (s, e) =>
+            {
+                streamPlayHandler.UpdateVolume((float)Math.Round(volumeSlider.Value / 100, 2));
             };
 
             playerSlider.ValueChanged += (s, e) =>
@@ -501,7 +510,7 @@ namespace Dank_Player_V3._0
             lstTrackList.SelectedItem = nextTrack;
         }
 
-        private void playerThumb_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        private void playerThumb_DragCompleted(object sender, DragCompletedEventArgs e)
         {
             if (_totalTime.TotalSeconds > 0)
             {
@@ -510,14 +519,19 @@ namespace Dank_Player_V3._0
             _isDragging = false;
         }
 
-        private void playerThumb_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        private void playerThumb_DragStarted(object sender, DragStartedEventArgs e)
         {
             _isDragging = true;
         }
 
-        private void playerThumb_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
+        private void playerThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
             txtCurrTime.Text = TimeSpan.FromSeconds(playerSlider.Value).ToString(@"mm\:ss");
+        }
+
+        private void playerThumb_DragDelta_1(object sender, DragDeltaEventArgs e)
+        {
+            streamPlayHandler.UpdateVolume((float)Math.Round(volumeSlider.Value / 100, 2));
         }
 
         private void MediaOpened(string file)
