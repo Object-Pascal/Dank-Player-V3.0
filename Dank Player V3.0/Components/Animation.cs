@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
@@ -29,7 +30,6 @@ namespace Dank_Player_V3._0
             pa.Duration = new Duration(duration);
 
             element.BeginAnimation(Canvas.LeftProperty, pa);
-
         }
 
         public static void AnimateGridObjectCanvasTop(UIElement element, double to, TimeSpan duration)
@@ -40,7 +40,6 @@ namespace Dank_Player_V3._0
             pa.Duration = new Duration(duration);
 
             element.BeginAnimation(Canvas.TopProperty, pa);
-
         }
 
         public static void AnimateGridObjectMargin(UIElement element, Thickness to, TimeSpan duration)
@@ -77,7 +76,7 @@ namespace Dank_Player_V3._0
             }
         }
 
-        public static void AnimateGridObjectOpacity(UIElement element, double to, TimeSpan duration)
+        public static DoubleAnimation AnimateGridObjectOpacity(UIElement element, double to, TimeSpan duration)
         {
             try
             {
@@ -87,8 +86,12 @@ namespace Dank_Player_V3._0
                 pa.Duration = new Duration(duration);
 
                 element.BeginAnimation(Grid.OpacityProperty, pa);
+                return pa;
             }
-            catch (NullReferenceException) { }
+            catch (NullReferenceException)
+            {
+                return null;
+            }
         }
 
         public static void AnimateGridObjectOpacity(UIElement element, double to, TimeSpan duration, Action animationCompleted)
@@ -203,6 +206,28 @@ namespace Dank_Player_V3._0
                 element.BeginAnimation(TextBlock.FontSizeProperty, pa);
             }
             catch (NullReferenceException) { }
+        }
+
+        public static bool canAnimateHardScrollViewHorizontalOffset = true;
+        public static bool isAnimatingHardScrollViewHorizontalOffset = false;
+        public static async void HardAnimateScrollViewHorizontalOffset(ScrollViewer sv, double to, int interval)
+        {
+            canAnimateHardScrollViewHorizontalOffset = true;
+            isAnimatingHardScrollViewHorizontalOffset = true;
+            await Task.Run(() =>
+            {
+                for (int i = 0; i < to; i++)
+                {
+                    if (!canAnimateHardScrollViewHorizontalOffset) break;
+
+                    sv.Dispatcher.Invoke(() =>
+                    {
+                        sv.ScrollToHorizontalOffset(i);
+                    });
+                    Thread.Sleep(interval);
+                }
+            });
+            isAnimatingHardScrollViewHorizontalOffset = false;
         }
     }
 }

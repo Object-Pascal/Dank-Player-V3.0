@@ -10,7 +10,7 @@
     <Grid x:Name="backgroundContainer" Background="#FF252525">
         <!--Menu control-->
         <Grid x:Name="controlGrid" Visibility="Hidden">
-            <Label x:Name="debugText" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Foreground="White"></Label>
+            <Label x:Name="debugText" HorizontalAlignment="Left" Visibility="Visible" VerticalAlignment="Top" Margin="20,20,0,0" Foreground="White"></Label>
 
             <!--Flyout menu left-->
             <Grid x:Name="btnMenuLeft" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#33FFFFFF" Width="20" Height="100"
@@ -54,7 +54,9 @@
 
                         <ProgressBar x:Name="bassIntensityBar" Width="100" Height="10" ToolTip="Next" HorizontalAlignment="Right" Margin="0,0,50,65" Value="0" Maximum="100"/>
 
-                        <TextBlock Name="txtCompactTitle" VerticalAlignment="Center" Margin="0,0,0,250" MaxWidth="475" Opacity="0.75" Height="50" Foreground="White" TextAlignment="Center" FontSize="30"></TextBlock>
+                        <ScrollViewer x:Name="svCompactTitle" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="25,0,25,250" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+                            <TextBlock Name="txtCompactTitle" HorizontalAlignment="Stretch" VerticalAlignment="Center" Opacity="0.75" Height="50" Foreground="White" TextAlignment="Center" FontSize="30"/>
+                        </ScrollViewer>
 
                         <TextBlock Name="txtCurrTime" VerticalAlignment="Center" Margin="0,0,100,150" Width="100" Opacity="0.75" Height="50" Foreground="White" TextAlignment="Center" FontSize="30">0:00</TextBlock>
                         <TextBlock VerticalAlignment="Center" Margin="0,0,0,150" Width="50" Opacity="0.75" Height="50" Foreground="White" TextAlignment="Center" FontSize="30">/</TextBlock>
@@ -72,8 +74,8 @@
                     </Grid>
 
                     <!--Playlist control-->
-                    <Grid Grid.Row="1">
-                        <fa:ImageAwesome x:Name="tracksLoadingIndicator" Panel.ZIndex="15" Visibility="Hidden" Icon="CircleOutlineNotch" Spin="True" SpinDuration="4" Foreground="White" Opacity="0.75" Margin="100, 375, 100, 375"/>
+                    <Grid Grid.Row="1" Panel.ZIndex="11">
+                        <fa:ImageAwesome x:Name="tracksLoadingIndicator" Visibility="Hidden" Icon="CircleOutlineNotch" Spin="True" SpinDuration="4" Foreground="White" Opacity="0.75" Height="75" Width="75" Margin="0,0,0,75" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         <Button x:Name="btnNewPlaylist" Margin="100, 275, 100, 350" Content="New playlist" Visibility="Visible" Background="#FF2F2F2F" Opacity="0.75"/>
                         <ListView x:Name="lstTrackList" Visibility="Hidden" Opacity="0.75" Panel.ZIndex="10">
                             <ListView.ItemTemplate>
@@ -93,15 +95,11 @@
                 </Grid>
             </Controls:Flyout>
 
-            <Label x:Name="txtMainTitle" MouseUp="ShowAnimationPane" Panel.ZIndex="5" VerticalAlignment="Center" Content="Start by creating a new playlist >>" Margin="0, 0, 0, 0" HorizontalAlignment="Center" FontSize="60" FontFamily="Segoe UI Light" FontWeight="Bold" Foreground="White">
+            <Label x:Name="txtMainTitle" MouseUp="SetFixTitle" Panel.ZIndex="5" VerticalAlignment="Center" Content="Start by creating a new playlist >>" Margin="0, 0, 0, 0" HorizontalAlignment="Center" FontSize="60" FontFamily="Segoe UI Light" FontWeight="Bold" Foreground="White">
                 <Label.Effect>
                     <DropShadowEffect BlurRadius="10" Opacity="0.6"/>
                 </Label.Effect>
             </Label>
-        </Grid>
-        <Grid x:Name="animationGrid">
-            <Canvas x:Name="animationPane" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            </Canvas>
         </Grid>
         <MediaElement x:Name="mediaBackground" Panel.ZIndex="-5"/>
     </Grid>

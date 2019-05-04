@@ -34,6 +34,7 @@ namespace Dank_Player_V3._0
 
         private bool _isPlaying;
         private bool _isDragging;
+        private bool _isTitleFixed;
 
         private string _currSource;
 
@@ -47,20 +48,34 @@ namespace Dank_Player_V3._0
             SetInitialDefaultValues();
 
             controlGrid.Visibility = Visibility.Visible;
-            animationGrid.Visibility = Visibility.Hidden;
         }
 
         #region CONTROL
         private void InitializeMediaEvents()
         {
+            _isTitleFixed = false;
             this.MouseMove += (s, e) =>
             {
-                double differenceX = (Mouse.GetPosition(this).X - this.Width / 2);
-                double differenceY = (Mouse.GetPosition(this).Y - this.Height / 2);
+                if (this.Cursor == Cursors.None)
+                    this.Cursor = Cursors.Arrow;
 
-                //debugText.Content = $"X:{differenceX} Y:{differenceY}";
+                if (!_isTitleFixed)
+                {
+                    double differenceX = (Mouse.GetPosition(this).X - this.Width / 2);
+                    double differenceY = (Mouse.GetPosition(this).Y - this.Height / 2);
 
-                txtMainTitle.Margin = new Thickness((differenceX / 10) / 2, (differenceY / 10) / 2, 0, 0);
+                    //debugText.Content = $"X:{differenceX} Y:{differenceY}";
+
+                    txtMainTitle.Margin = new Thickness((differenceX / 10) / 2, (differenceY / 10) / 2, 0, 0);
+                }
+            };
+
+            this.KeyUp += (s, e) =>
+            {
+                if (e.Key == Key.H && (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+                {
+                    this.Cursor = Cursors.None;
+                }
             };
 
             mediaBackground.MediaEnded += (s, e) =>
@@ -71,7 +86,7 @@ namespace Dank_Player_V3._0
             streamPlayHandler = new StreamPlayHandler();
             streamPlayHandler.Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero);
 
-            streamPlayHandler.MediaLoaded += (s, e) => { MediaOpened(e.currFile); };
+            streamPlayHandler.MediaLoaded += (s, e) => { MediaLoaded(e.currFile); };
         }
 
         private void SetInitialDefaultValues()
@@ -159,7 +174,21 @@ namespace Dank_Player_V3._0
                 btnPrevious.IsEnabled = !btnShuffleEnabled.IsChecked.Value;
             };
 
-            btnMenuLeft.MouseUp += async(s, e) =>
+            txtCompactTitle.MouseMove += (s, e) =>
+            {
+                if (svCompactTitle.ScrollableWidth > 0 && !Animation.isAnimatingHardScrollViewHorizontalOffset)
+                {
+                    Animation.HardAnimateScrollViewHorizontalOffset(svCompactTitle, svCompactTitle.ActualWidth + svCompactTitle.ScrollableWidth, 10);
+                }
+            };
+
+            txtCompactTitle.MouseLeave += (s, e) =>
+            {
+                Animation.canAnimateHardScrollViewHorizontalOffset = false;
+                svCompactTitle.ScrollToHorizontalOffset(0);
+            };
+
+            btnMenuLeft.MouseUp += (s, e) =>
             {
                 flyoutMenuLeft.IsOpen = true;
                 btnMenuLeft.Visibility = Visibility.Hidden;
@@ -270,6 +299,8 @@ namespace Dank_Player_V3._0
                         btnNewPlaylist.Visibility = Visibility.Hidden;
                         tracksLoadingIndicator.Visibility = Visibility.Visible;
 
+                        txtMainTitle.Content = "Loading playlist...";
+
                         List<string> durations = await Task.Run(() =>
                         {
                             List<string> temp = new List<string>();
@@ -310,13 +341,14 @@ namespace Dank_Player_V3._0
 
                         txtTotalTime.Content = new TimeSpan(0, totalMinutes, totalSeconds).ToString();
 
+                        txtMainTitle.Content = "Playlist loaded >>";
                         lstTrackList.Visibility = Visibility.Visible;
                         tracksLoadingIndicator.Visibility = Visibility.Hidden;
+
                         btnNewPlaylist.IsEnabled = false;
                         btnNewPlaylist.Visibility = Visibility.Hidden;
 
                         txtSearch.IsEnabled = true;
-                        btnShuffleEnabled.IsEnabled = true;
                         btnResetPlaylist.IsEnabled = true;
                     }
                     else
@@ -325,6 +357,7 @@ namespace Dank_Player_V3._0
                             btnNewPlaylist.Visibility = Visibility.Visible;
 
                         tracksLoadingIndicator.Visibility = Visibility.Hidden;
+                        txtMainTitle.Content = "Start by creating a new playlist >>";
                         MessageBox.Show("No .mp3 files found in the specified directory", "Invalid directory", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
@@ -344,7 +377,9 @@ namespace Dank_Player_V3._0
                         _playlistItems.Clear();
                         lstTrackList.ItemsSource = null;
 
-                        txtMaxTime.Text = "0:00";
+                        txtMaxTime.Text = "00:00";
+                        txtCurrTime.Text = "00:00";
+                        txtTotalTime.Content = "00:00:00";
 
                         lstTrackList.Visibility = Visibility.Hidden;
                         tracksLoadingIndicator.Visibility = Visibility.Visible;
@@ -356,8 +391,12 @@ namespace Dank_Player_V3._0
                         btnNext.IsEnabled = false;
                         btnPrevious.IsEnabled = false;
                         btnResetPlaylist.IsEnabled = false;
+                        txtSearch.IsEnabled = false;
 
                         playerSlider.Value = 0;
+
+                        txtMainTitle.Content = "Loading playlist...";
+                        txtCompactTitle.Text = string.Empty;
 
                         List<string> durations = await Task.Run(() =>
                         {
@@ -388,19 +427,20 @@ namespace Dank_Player_V3._0
 
                         txtTotalTime.Content = new TimeSpan(0, totalMinutes, totalSeconds).ToString();
 
+                        txtMainTitle.Content = "Playlist loaded >>";
                         btnResetPlaylist.IsEnabled = false;
                         lstTrackList.Visibility = Visibility.Hidden;
                         tracksLoadingIndicator.Visibility = Visibility.Hidden;
                         lstTrackList.Visibility = Visibility.Visible;
 
                         txtSearch.IsEnabled = true;
-                        btnShuffleEnabled.IsEnabled = true;
                         btnResetPlaylist.IsEnabled = true;
                     }
                     else
                     {
                         btnNewPlaylist.Visibility = Visibility.Visible;
                         tracksLoadingIndicator.Visibility = Visibility.Hidden;
+                        txtMainTitle.Content = "Start by creating a new playlist >>";
                         MessageBox.Show("No .mp3 files found in the specified directory", "Invalid directory", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
@@ -413,6 +453,7 @@ namespace Dank_Player_V3._0
                     TrackListItem item = lstTrackList.SelectedItem as TrackListItem;
                     Animation.AnimateGridObjectOpacity(txtMainTitle, 0, TimeSpan.FromMilliseconds(300), () =>
                     {
+                        txtCompactTitle.Text = item.title;
                         string initialTitle = string.Empty;
                         if (item.title.Length > 50)
                         {
@@ -425,7 +466,18 @@ namespace Dank_Player_V3._0
                         }
 
                         txtMainTitle.Content = initialTitle;
-                        txtCompactTitle.Text = initialTitle;
+
+                        FormattedText formattedText = new FormattedText(
+                            txtCompactTitle.Text,
+                            System.Globalization.CultureInfo.CurrentCulture,
+                            FlowDirection.LeftToRight,
+                            new Typeface(txtCompactTitle.FontFamily, txtCompactTitle.FontStyle, txtCompactTitle.FontWeight, txtCompactTitle.FontStretch),
+                            txtCompactTitle.FontSize,
+                            Brushes.Black,
+                            new NumberSubstitution(), 
+                            TextFormattingMode.Display
+                        );
+                        debugText.Content = $"width: {formattedText.Width}";
 
                         if (!flyoutMenuLeft.IsOpen && !flyoutMenuRight.IsOpen)
                         {
@@ -443,6 +495,7 @@ namespace Dank_Player_V3._0
                     volumeSlider.IsEnabled = true;
                     btnPause.IsEnabled = true;
                     btnNext.IsEnabled = true;
+                    btnShuffleEnabled.IsEnabled = true;
                     btnPrevious.IsEnabled = !btnShuffleEnabled.IsChecked.Value;
                 }
             };
@@ -490,6 +543,7 @@ namespace Dank_Player_V3._0
             playerSlider.IsEnabled = true;
             btnPause.IsEnabled = true;
             btnNext.IsEnabled = true;
+            btnShuffleEnabled.IsEnabled = true;
             btnPrevious.IsEnabled = !btnShuffleEnabled.IsChecked.Value;
         }
 
@@ -534,7 +588,14 @@ namespace Dank_Player_V3._0
             streamPlayHandler.UpdateVolume((float)Math.Round(volumeSlider.Value / 100, 2));
         }
 
-        private void MediaOpened(string file)
+        private void SetFixTitle(object sender, MouseButtonEventArgs e)
+        {
+            _isTitleFixed = !_isTitleFixed;
+            if (_isTitleFixed)
+                txtMainTitle.Margin = new Thickness(0,0,0,0);
+        }
+
+        private void MediaLoaded(string file)
         {
             _totalTime = streamPlayHandler.GetChannelLength();
             playerSlider.Maximum = _totalTime.TotalSeconds;
@@ -562,8 +623,11 @@ namespace Dank_Player_V3._0
             MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
             MMDevice device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
     
-            //debugText.Visibility = Visibility.Visible;
             streamPlayHandler.Play();
+
+            btnPauseIcon.Icon = FontAwesome.WPF.FontAwesomeIcon.PauseCircle;
+            _isPlaying = true;
+            btnPause.ToolTip = "Pause";
 
             _timerBassIntensityTick.Tick += async(s, ev) =>
             {
@@ -578,70 +642,13 @@ namespace Dank_Player_V3._0
 
                     Dispatcher.Invoke(() =>
                     {
-                        debugText.Content = freqIncr.ToString();
-                        bassIntensityBar.Value = freqIncr;
+                        //debugText.Content = freqIncr.ToString();
+                        bassIntensityBar.Value = freqIncr * 3;
                         Animation.AnimateLabelObjectFontSize(txtMainTitle, 60 + freqIncr, TimeSpan.FromMilliseconds(100));
                     });
                 });
             };
             _timerBassIntensityTick.Start();
-        }
-        #endregion
-
-        #region ANIMATION
-        private void ShowAnimationPane(object sender, MouseButtonEventArgs args)
-        {
-            Animation.AnimateGridObjectOpacity(controlGrid, 1, 0, TimeSpan.FromMilliseconds(500));
-            controlGrid.Visibility = Visibility.Hidden;
-
-            animationGrid.Visibility = Visibility.Visible;
-            Animation.AnimateGridObjectOpacity(animationGrid, 0, 1, TimeSpan.FromMilliseconds(500));
-
-            List<Ellipse> particles = new List<Ellipse>();
-            Random rnd = new Random();
-
-            DispatcherTimer timerUpdate = new DispatcherTimer();
-            timerUpdate.Interval = TimeSpan.FromMilliseconds(300);
-            timerUpdate.Start();
-            timerUpdate.Tick += (s, e) =>
-            {
-                Ellipse particle = new Ellipse();
-                particle.Fill = new SolidColorBrush(Color.FromRgb((byte)rnd.Next(0, 255), (byte)rnd.Next(0, 255), (byte)rnd.Next(0, 255)));
-
-                int size = rnd.Next(10, 100);
-                particle.Width = size;
-                particle.Height = size;
-
-                int left = rnd.Next(0, (int)this.Width);
-                int top = rnd.Next(0, (int)this.Height);                     
-
-                particle.Margin = new Thickness(left, top, 0, 0);
-                particle.Opacity = 0;
-                animationPane.Children.Add(particle);
-
-                Animation.AnimateGridObjectOpacity(particle, 0, 1, TimeSpan.FromMilliseconds(1500), true);
-                Animation.AnimateGridObjectMargin(particle, new Thickness(particle.Margin.Left + rnd.Next(-75, 75), particle.Margin.Top + rnd.Next(-75, 75), 0, 0), TimeSpan.FromMilliseconds(2500));
-            };
-
-            this.KeyUp += (s, e) =>
-            {
-                timerUpdate.Stop();
-                HideAnimationPane(s, e);
-            };
-        }
-
-        private void HideAnimationPane(object sender, KeyEventArgs args)
-        {
-            if (args.Key == Key.Escape && controlGrid.Visibility != Visibility.Visible)
-            {
-                animationPane.Children.Clear();
-
-                Animation.AnimateGridObjectOpacity(animationGrid, 1, 0, TimeSpan.FromMilliseconds(500));
-                animationGrid.Visibility = Visibility.Hidden;
-
-                controlGrid.Visibility = Visibility.Visible;
-                Animation.AnimateGridObjectOpacity(controlGrid, 0, 1, TimeSpan.FromMilliseconds(500));
-            }
         }
         #endregion
     }
